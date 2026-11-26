@@ -21,7 +21,19 @@ export default function RoomCard({ room, nights, guests, onSelect }) {
   return (
     <article className={`room-card ${!isAvailable ? "room-unavailable" : ""}`}>
       <div className="carousel">
-        <img src={images[currentImg]} alt={`${room.nombre} - foto ${currentImg + 1}`} loading="lazy" />
+        <div
+          className="carousel-track"
+          style={{ transform: `translateX(-${currentImg * 100}%)` }}
+        >
+          {images.map((src, idx) => (
+            <img
+              key={idx}
+              src={src}
+              alt={`${room.nombre} - foto ${idx + 1}`}
+              loading="lazy"
+            />
+          ))}
+        </div>
         <span className={`availability-tag ${isAvailable ? "tag-ok" : "tag-busy"}`}>
           {!fitsGuests ? `Capacidad máx: ${room.capacidad}` : room.disponible ? "Disponible" : "Ocupada en estas fechas"}
         </span>
