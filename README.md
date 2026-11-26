@@ -18,7 +18,7 @@ Prototipo funcional de catálogo visual y flujo de reservas para cabañas, desar
 
 ## Captura de pantalla
 
-![Captura del MVP](docs/captura.png)
+![Captura del MVP](docs/frontend.png)
 
 ## Cómo ejecutarlo en local
 
