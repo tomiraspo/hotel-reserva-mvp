@@ -16,6 +16,10 @@ Prototipo funcional de catálogo visual y flujo de reservas para cabañas, desar
 - **Base de datos:** MySQL
 - **Control de versiones:** Git / GitHub
 
+## Captura de pantalla
+
+![Captura del MVP](docs/captura.png)
+
 ## Cómo ejecutarlo en local
 
 ### 1. Base de datos (MySQL)
