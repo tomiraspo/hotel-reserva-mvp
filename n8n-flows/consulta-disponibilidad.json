@@ -1,0 +1,96 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "consultar-disponibilidad",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -144,
+        0
+      ],
+      "id": "2bb1d12b-1e42-453a-afbe-d6d52629529f",
+      "name": "Webhook",
+      "webhookId": "09616f2e-eca1-47cf-ac8e-bf4bf0f57de6"
+    },
+    {
+      "parameters": {
+        "url": "http://host.docker.internal:8000/disponibilidad",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "checkin",
+              "value": "={{ $json.body.checkin }}"
+            },
+            {
+              "name": "checkout",
+              "value": "={{ $json.body.checkout }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        64,
+        0
+      ],
+      "id": "b8d142c6-aac2-44a4-a97e-30b63c861f8f",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $input.first().json;\nconst libres = data.disponibles || [];\n\nif (libres.length === 0) {\n  return [{ json: { mensaje: `No hay habitaciones libres del ${data.checkin} al ${data.checkout}.` } }];\n}\n\nconst detalle = libres\n  .map(h => `- ${h.nombre}: $${h.total_estimado} (${data.noches} noches)`)\n  .join(\"\\n\");\n\nconst mensaje = `Disponibilidad del ${data.checkin} al ${data.checkout}:\\n${detalle}`;\n\nreturn [{ json: { mensaje } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        256,
+        0
+      ],
+      "id": "2104814a-5710-47b7-93c1-c014547f266c",
+      "name": "Code in JavaScript"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "50ae0b50-9e3f-435b-83de-3b149c0d8059",
+  "meta": {
+    "instanceId": "102ca903264c850051e3c1c9502d9c5fc4864c46247ffd5805047a46c0e4525b"
+  },
+  "id": "mZmaCJ9qytEdUw0Y",
+  "tags": []
+}
