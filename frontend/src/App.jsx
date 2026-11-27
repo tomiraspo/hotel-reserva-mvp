@@ -44,21 +44,19 @@ export default function App() {
     return diff > 0 ? diff : 0;
   }, [checkIn, checkOut]);
 
-  const validationError = checkIn && checkOut && nights <= 0 ? "La fecha de check-out debe ser posterior al check-in." : "";
+  const validationError =
+    checkIn && checkOut && nights <= 0 ? "La fecha de check-out debe ser posterior al check-in." : "";
 
   useEffect(() => {
     (async () => {
       const online = await checkApiHealth();
       setApiOnline(online);
-      if (!online) return;
-      try {
-        const [avail, activeBookings] = await Promise.all([
-          fetchAvailability({ checkIn, checkOut, guests }).catch(() => FALLBACK_ROOMS),
-          fetchBookings().catch(() => []),
-        ]);
-        if (avail.length) setRooms(avail);
-        setBookings(activeBookings);
-      } catch {}
+      const [avail, activeBookings] = await Promise.all([
+        fetchAvailability({ checkIn, checkOut, guests }),
+        fetchBookings(),
+      ]);
+      if (avail.length) setRooms(avail);
+      setBookings(activeBookings);
     })();
   }, []);
 
@@ -69,11 +67,13 @@ export default function App() {
     setFeedback(null);
     try {
       const data = await fetchAvailability({ checkIn, checkOut, guests });
-      setApiOnline(true);
       setRooms(data.length ? data : FALLBACK_ROOMS);
-      setFeedback({ type: "info", text: "Disponibilidad actualizada desde el backend." });
-    } catch (err) {
-      setFeedback({ type: "warn", text: `No se pudo consultar el backend (${err.message}). Mostrando catálogo de vista previa.` });
+      setFeedback({
+        type: "info",
+        text: apiOnline
+          ? "Disponibilidad actualizada desde el backend."
+          : "Disponibilidad actualizada en modo demostración.",
+      });
     } finally {
       setLoading(false);
     }
@@ -86,15 +86,16 @@ export default function App() {
       const created = await createBooking(payload);
       const newRecord = created?.id ? created : { id: Date.now(), ...payload };
       setBookings((prev) => [newRecord, ...prev]);
-      setRooms((prev) => prev.map((r) => (r.id === payload.habitacion_id ? { ...r, disponible: false } : r)));
+      setRooms((prev) =>
+        prev.map((r) => (r.id === payload.habitacion_id ? { ...r, disponible: false } : r))
+      );
       setSelectedRoom(null);
-      setFeedback({ type: "success", text: "Reserva creada correctamente en el entorno." });
-    } catch (err) {
-      const simulated = { id: Date.now(), ...payload };
-      setBookings((prev) => [simulated, ...prev]);
-      setRooms((prev) => prev.map((r) => (r.id === payload.habitacion_id ? { ...r, disponible: false } : r)));
-      setSelectedRoom(null);
-      setFeedback({ type: "warn", text: `Reserva registrada en sesión local (backend: ${err.message}).` });
+      setFeedback({
+        type: "success",
+        text: apiOnline
+          ? "Reserva creada correctamente en el servidor."
+          : "Reserva registrada en la demo interactiva (guardada en tu navegador).",
+      });
     } finally {
       setSubmitting(false);
     }
@@ -104,15 +105,15 @@ export default function App() {
     setDeletingId(id);
     try {
       await deleteBooking(id);
-      setFeedback({ type: "info", text: "Reserva eliminada de la base de datos." });
-    } catch {
-      setFeedback({ type: "info", text: "Reserva eliminada de la vista de prueba." });
-    } finally {
       const removed = bookings.find((b) => b.id === id);
       setBookings((prev) => prev.filter((b) => b.id !== id));
       if (removed) {
-        setRooms((prev) => prev.map((r) => (r.id === removed.habitacion_id ? { ...r, disponible: true } : r)));
+        setRooms((prev) =>
+          prev.map((r) => (r.id === removed.habitacion_id ? { ...r, disponible: true } : r))
+        );
       }
+      setFeedback({ type: "info", text: "Reserva eliminada correctamente." });
+    } finally {
       setDeletingId(null);
     }
   };
@@ -122,12 +123,11 @@ export default function App() {
     setFeedback(null);
     try {
       await resetDemoBookings();
-      setFeedback({ type: "success", text: "Base de demostración reiniciada con éxito." });
-    } catch (err) {
-      setFeedback({ type: "info", text: `Estado visual reiniciado (endpoint DELETE /reservas/demo: ${err.message}).` });
-    } finally {
       setBookings([]);
-      setRooms((prev) => prev.map((r) => ({ ...r, disponible: true })));
+      const refreshed = await fetchAvailability({ checkIn, checkOut, guests });
+      setRooms(refreshed.length ? refreshed : FALLBACK_ROOMS);
+      setFeedback({ type: "success", text: "Datos de demostración reiniciados con éxito." });
+    } finally {
       setResetting(false);
     }
   };
@@ -154,11 +154,17 @@ export default function App() {
             ))}
           </div>
         </section>
-        <BookingsPanel bookings={bookings} onDeleteOne={handleDeleteOne} onResetAll={handleResetDemo} deletingId={deletingId} />
+        <BookingsPanel
+          bookings={bookings}
+          onDeleteOne={handleDeleteOne}
+          onResetAll={handleResetDemo}
+          deletingId={deletingId}
+        />
       </main>
       <BookingModal
         room={selectedRoom} checkIn={checkIn} checkOut={checkOut} nights={nights}
-        guests={guests} submitting={submitting} onClose={() => setSelectedRoom(null)} onConfirm={handleCreateBooking}
+        guests={guests} submitting={submitting}
+        onClose={() => setSelectedRoom(null)} onConfirm={handleCreateBooking}
       />
     </div>
   );
