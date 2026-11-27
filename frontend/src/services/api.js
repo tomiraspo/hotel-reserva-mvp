@@ -1,7 +1,8 @@
 const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:8000";
 const STORAGE_KEY = "cabanas_mvp_reservas_v2";
 export const DEPOSIT_PERCENT = 0.3;
-const LOCK_MS = 15 * 60 * 1000;
+export const LOCK_MINUTES = 15;
+const LOCK_MS = LOCK_MINUTES * 60 * 1000;
 
 export const CABINS_CATALOG = [
   {
@@ -238,4 +239,28 @@ export async function deleteBooking(id) {
 export function resetDemoBookings() {
   writeBookings([...INITIAL_BOOKINGS]);
   return [...INITIAL_BOOKINGS];
+}
+
+export function getBookingSummary() {
+  const bookings = cleanExpiredLocks();
+  return bookings.reduce(
+    (acc, booking) => {
+      acc.totalCount += 1;
+      if (booking.status === "CONFIRMADA") {
+        acc.confirmedCount += 1;
+        acc.confirmedRevenue += Number(booking.total_price || 0);
+      } else if (booking.status === "PENDIENTE_SENA") {
+        acc.pendingDepositCount += 1;
+        acc.pendingDepositAmount += Number(booking.deposit_amount || 0);
+      }
+      return acc;
+    },
+    {
+      totalCount: 0,
+      confirmedCount: 0,
+      confirmedRevenue: 0,
+      pendingDepositCount: 0,
+      pendingDepositAmount: 0,
+    }
+  );
 }
