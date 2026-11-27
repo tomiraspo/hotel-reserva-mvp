@@ -1,24 +1,21 @@
-# Hotel Reserva & Automatización — MVP
+# Sistema de Reservas para Complejo de Cabañas
 
-MVP web para consulta de disponibilidad y gestión de reservas de alojamientos, construido con **React + Vite**, **FastAPI** y **MySQL**, pensado para demostraciones de producto y automatización de flujos.
+Aplicación web para consultar disponibilidad, bloquear fechas temporalmente y gestionar reservas en un complejo de cabañas.
 
-## Demo interactiva
+## Funcionalidades y reglas de negocio
+- **Catálogo de cabañas:** 4 tipologías con capacidad máxima, categoría y tarifa por noche.
+- **Control de disponibilidad:** validación de fechas (`check_in` / `check_out`), detección de solapamientos y filtro por cantidad de huéspedes.
+- **Bloqueo temporal:** reserva transitoria de 15 minutos (`BLOQUEADA_TEMPORAL`) con limpieza automática de bloqueos vencidos.
+- **Esquema financiero:** cálculo automático de noches, total de estadía, seña del 30% (`PENDIENTE_SENA`) y saldo restante.
+- **Gestión de estados:** seguimiento de reservas confirmadas, pendientes de seña y cancelaciones/eliminaciones.
 
-* **Aplicación en vivo (Modo Demo):** [https://hotel-reserva-mvp.vercel.app/](https://hotel-reserva-mvp.vercel.app/)
-* **Persistencia sin servidor en la demo:** Cuando el backend local no está activo (como en el despliegue estático de Vercel), la aplicación opera en modo demostración usando `localStorage` del navegador. Las reservas creadas se conservan al recargar la página y pueden limpiarse con el botón **Reiniciar demo**.
+## Arquitectura
+- **Frontend:** React + Vite.
+- **Capa de servicios:** `frontend/src/services/api.js` (intenta consumir `VITE_API_URL` y usa persistencia local como respaldo de demostración).
+- **Despliegue:** configurado para build de producción en Vercel.
 
-## Arquitectura y stack
-
-* **Frontend:** React, Vite, CSS modular.
-* **Backend:** FastAPI (endpoints de disponibilidad, listado, creación y eliminación de reservas).
-* **Base de datos:** MySQL (entorno local).
-* **Automatización:** Integración planificada con `n8n` para notificaciones y flujos operativos.
-
-## Ejecución local completa (Frontend + Backend + MySQL)
-
-1. Levantar la base de datos MySQL y configurar las variables de entorno del backend.
-2. Iniciar el servidor FastAPI (por defecto en `http://localhost:8000`).
-3. En `frontend/`, ejecutar:
-   ```bash
-   npm install
-   npm run dev
+## Ejecución local
+```bash
+cd frontend
+npm install
+npm run dev
