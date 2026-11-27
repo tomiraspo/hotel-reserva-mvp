@@ -244,7 +244,7 @@ export default function App() {
       <header style={styles.header}>
         <div>
           <span style={styles.eyebrow}>Sistema de Gestión & Reservas Directas</span>
-          <h1 style={styles.title}>Complejo de Cabañas — Motor de Reservas MVP</h1>
+          <h1 style={styles.title}>Complejo de Cabañas — Motor de Reservas</h1>
           <p style={styles.subtitle}>
             Control de disponibilidad sin solapamiento, bloqueo temporal de 15 minutos, gestión de señas (30%) y cierre por WhatsApp.
           </p>
@@ -381,10 +381,6 @@ export default function App() {
                   <span style={styles.priceNight}>{formatARS(room.price_per_night)} / noche</span>
                   <div style={styles.priceTotal}>
                     Total ({room.nights} noches): <strong>{formatARS(room.total_price)}</strong>
-                  </div>
-                  <div style={styles.priceDeposit}>
-                    Seña 30%: <strong>{formatARS(room.deposit_amount)}</strong> · Saldo al ingreso:{" "}
-                    {formatARS(room.balance_amount)}
                   </div>
                 </div>
               </div>
@@ -805,11 +801,6 @@ const styles = {
     fontSize: "15px",
     color: "#0f172a",
     marginTop: "2px",
-  },
-  priceDeposit: {
-    fontSize: "12px",
-    color: "#0f766e",
-    marginTop: "3px",
   },
   unavailableBox: {
     marginTop: "10px",
