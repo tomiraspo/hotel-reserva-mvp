@@ -10,7 +10,7 @@ import {
   getBookings,
   resetDemoBookings,
   updateBookingStatus,
-} from "./service/api";
+} from "./services/api";
 
 function getDefaultDates() {
   const inDate = new Date();
