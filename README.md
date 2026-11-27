@@ -1,31 +1,24 @@
-# Reserva de Cabañas — MVP
+# Hotel Reserva & Automatización — MVP
 
-Prototipo funcional de catálogo visual y flujo de reservas para cabañas, desarrollado como **MVP de portafolio** con foco en una interfaz clara, consulta de disponibilidad y persistencia en base de datos sin sobreingeniería.
+MVP web para consulta de disponibilidad y gestión de reservas de alojamientos, construido con **React + Vite**, **FastAPI** y **MySQL**, pensado para demostraciones de producto y automatización de flujos.
 
-## Alcance del MVP
+## Demo interactiva
 
-- **Catálogo visual:** Listado de cabañas con fotos, precios, capacidad/huéspedes y selección de fechas de check-in y check-out.
-- **Flujo de reserva:** Modal interactivo para registrar reservas y opción para reiniciar o probar el estado de demostración.
-- **Respaldo de datos:** Soporta datos de prueba en frontend para visualizar la interfaz si el backend no está activo.
-- **Persistencia:** Conexión entre la interfaz web, una API en FastAPI y una base de datos relacional en MySQL.
+* **Aplicación en vivo (Modo Demo):** `[TU-URL-DE-VERCEL]`
+* **Persistencia sin servidor en la demo:** Cuando el backend local no está activo (como en el despliegue estático de Vercel), la aplicación opera en modo demostración usando `localStorage` del navegador. Las reservas creadas se conservan al recargar la página y pueden limpiarse con el botón **Reiniciar demo**.
 
-## Stack tecnológico
+## Arquitectura y stack
 
-- **Frontend:** React + Vite
-- **Backend:** FastAPI + Uvicorn (Python)
-- **Base de datos:** MySQL
-- **Control de versiones:** Git / GitHub
+* **Frontend:** React, Vite, CSS modular.
+* **Backend:** FastAPI (endpoints de disponibilidad, listado, creación y eliminación de reservas).
+* **Base de datos:** MySQL (entorno local).
+* **Automatización:** Integración planificada con `n8n` para notificaciones y flujos operativos.
 
-## Captura de pantalla
+## Ejecución local completa (Frontend + Backend + MySQL)
 
-![Captura del MVP](docs/frontend.png)
-
-## Cómo ejecutarlo en local
-
-### 1. Base de datos (MySQL)
-- Asegúrate de tener el servicio de MySQL activo y creada la base de datos configurada para el proyecto.
-
-### 2. Backend (FastAPI)
-```bash
-cd backend
-uvicorn main:app --reload
+1. Levantar la base de datos MySQL y configurar las variables de entorno del backend.
+2. Iniciar el servidor FastAPI (por defecto en `http://localhost:8000`).
+3. En `frontend/`, ejecutar:
+   ```bash
+   npm install
+   npm run dev
