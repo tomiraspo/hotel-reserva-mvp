@@ -4,7 +4,7 @@ MVP web para consulta de disponibilidad y gestión de reservas de alojamientos, 
 
 ## Demo interactiva
 
-* **Aplicación en vivo (Modo Demo):** `[TU-URL-DE-VERCEL]`
+* **Aplicación en vivo (Modo Demo):** `[https://hotel-reserva-mvp.vercel.app/]`
 * **Persistencia sin servidor en la demo:** Cuando el backend local no está activo (como en el despliegue estático de Vercel), la aplicación opera en modo demostración usando `localStorage` del navegador. Las reservas creadas se conservan al recargar la página y pueden limpiarse con el botón **Reiniciar demo**.
 
 ## Arquitectura y stack
